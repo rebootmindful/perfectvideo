@@ -9,7 +9,8 @@ description: >
   适用 Seedance/Kling/Runway/可灵/即梦/MiniMax-H3 等视频模与首尾帧工作流。
   触发：视频提示词、AI视频prompt、分镜、nextshot、下一镜、连戏、材质宪法、
   运镜建议、艺术短片、PerfectVideo、帮我写视频prompt、storyboard video prompt、
-  视频分镜表、旁白字幕（艺术向）、真声轨、微动节拍、光相位、首尾帧、子弹时间。
+  视频分镜表、旁白字幕（艺术向）、真声轨、微动节拍、光相位、首尾帧、子弹时间、
+  口播脚本、执行度对账。
   排除：纯静态写真八步（PerfectPhoto）、URL 复刻、批量 API 编排、运镜词库堆砌、
   爆款钩子/完播CTA/带货话术主路径、翻译摘要无关任务。
 metadata:
@@ -63,8 +64,9 @@ platforms:
 | 模式 | 何时 | 合同 |
 |------|------|------|
 | **A Single15** | target≤model，一事一空间 | 相位轴 + 一镜到底 |
+| **A+ MultiClip 逐拍** | 运镜≥3 段/含签名运镜（执行度优先） | 每拍独立 prompt + 尾帧接续 + xfade 拼接 |
 | **B MultiShot-in-one** | 同次 2–3 真切 | 共用 lock + `Shot N:` |
-| **C NextShot Chain** | target>model 或硬连戏 | 焊接 + 双产物 |
+| **C NextShot Chain** | target>model 或硬连戏 | 焊接 + 双产物 + **每镜执行度对账** |
 
 | path | 含义 |
 |------|------|
@@ -139,8 +141,8 @@ platforms:
 
 ### 静默代填（禁止单独成问）
 
-预算主花销 · A/B/C · morph · **真声轨（H3/Kling3）** · **微动节拍** · **光相位** · 首尾帧/参考图方案 · tech 降权 · negatives · title 草案 · QC/CTA 扫描  
-细节：`references/native-audio.md` · `micro-motion.md` · `light-phase.md` · `frame-reference-contract.md`
+预算主花销 · A/A+/B/C · **景别 scale**（每拍必填）· morph · **真声轨（H3/Kling3）** · **微动节拍** · **光相位** · 首尾帧/参考图方案 · tech 降权 · negatives · title 草案 · QC/CTA 扫描  
+细节：`references/native-audio.md` · `micro-motion.md` · `light-phase.md` · `frame-reference-contract.md` · `shot-scale.md`
 
 ### 快速模式
 
@@ -199,6 +201,8 @@ S12 = NextShot loop。
 | **素材准备清单** | `references/asset-checklist.md` |
 | **微动节拍（D）** | `references/micro-motion.md` |
 | **光相位（E）** | `references/light-phase.md` |
+| **景别×情绪（地基）** | `references/shot-scale.md` |
+| **执行度对账（试片会）** | `references/post-shot-review.md` |
 | 后台 S 映射 | `references/workflow-s0-s12.md` |
 | 槽位 | `references/architecture-slots.md` |
 | 连戏 | `references/consistency-protocol.md` |

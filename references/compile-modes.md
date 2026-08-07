@@ -18,6 +18,20 @@
 - shotlist：相位行  
 - **禁止** `Shot 1:` 真切标签  
 
+## A+ · MultiClip 逐拍（高执行度主路径 · 2026-08-07 同行评审新增）
+
+> **模型执行度打折是物理现实**：真机验证「5 段运镜只执行 3 段」（research/09）。  
+> 根治方案 = **一镜一拍**：15s 拆 5×3s 分拍，每拍单独生成（运镜 100% 执行），再 xfade 拼接。
+
+- **条件**：target ≤ model 且**运镜 ≥3 段**或含签名运镜 → 优先逐拍；纯单主运镜仍可 A
+- **结构**：
+  1. 每拍 1 个独立 prompt（锁同 lock，只改本拍运镜/动作/微动）
+  2. 拍 N 尾帧 → 拍 N+1 首帧（首帧续接，连戏 ~99%）
+  3. xfade 交叉溶解拼接（1s，同构图）
+- **铁律**：每拍单主运镜；总拍数 × 单拍时长 = target；拼接参数写死（`-pix_fmt yuv420p -profile:v high -movflags +faststart`）
+- shotlist：每拍一行 + 拼接行
+- **成本**：拍数 × 单条生成费（5 拍 ≈ 5× 单条）——执行度优先于成本
+
 ## B · MultiShot-in-one
 
 - 同次 2–3 真切；**同一 lock 前缀**  
@@ -35,6 +49,7 @@
 
 - 上镜尾帧 → 本镜 start 锚  
 - identity 定期 re-anchor  
+- **每镜跑完强制「执行度对账」**（`post-shot-review.md`）  
 
 ## full / compact / chain
 

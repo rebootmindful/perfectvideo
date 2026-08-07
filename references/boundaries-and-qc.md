@@ -55,6 +55,15 @@
 - [ ] 光相位 3 段（基线/变奏/落幅）；单向推进未回跳
 - [ ] 光动物理化；无硬闪/无跳变/无无来源光
 
+**景别地基（`shot-scale.md`）：**
+- [ ] 每拍 `scale` 已填（EWS/LS/FS/MS/MCU/CU/ECU）
+- [ ] 景别弧线单向或 V 型，无乱跳
+- [ ] 景别与运镜联动（近景无大环绕、大远景无手持）
+
+**执行度对账（`post-shot-review.md`）：**
+- [ ] 真机后对账已填（task_id 记录）；执行度 <3/5 已切逐拍或降级
+- [ ] 下镜 prompt 已按对账修正（未带旧 prompt 继续）
+
 ## 脚本层闸门（P0）
 
 - [ ] `video_overview` 齐全（title/platform/aspect/双时长/style/audience/path/no_cta）  

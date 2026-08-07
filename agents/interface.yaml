@@ -120,6 +120,8 @@ resources:
     - references/asset-checklist.md
     - references/micro-motion.md
     - references/light-phase.md
+    - references/shot-scale.md
+    - references/post-shot-review.md
     - references/boundaries-and-qc.md
   schemas:
     - schemas/visual-bible-lock.md

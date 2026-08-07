@@ -266,8 +266,9 @@ S12 NextShot               ← 成片后
 | 模式 | 条件 | 产物合同 |
 |------|------|----------|
 | **A Single15** | target≤model 且一事一空间 | 相位时间轴 + 一镜到底；shotlist 为相位行 |
+| **A+ MultiClip 逐拍** | 运镜≥3 段/含签名（执行度优先） | 每拍独立 prompt + 尾帧接续 + xfade 拼接（`compile-modes.md`） |
 | **B MultiShot-in-one** | 同次 2–3 真切 | 共用 lock + `Shot N:`；shotlist 每 Shot 一行 |
-| **C NextShot Chain** | target>model 或硬连戏 | 每镜焊接 + 双产物；shotlist 跨 clip 连续时间码（成片尺）可另注 clip 尺 |
+| **C NextShot Chain** | target>model 或硬连戏 | 每镜焊接 + 双产物 + **执行度对账**；shotlist 跨 clip 连续时间码（成片尺）可另注 clip 尺 |
 
 ### 4.3 路径卡片
 
@@ -459,6 +460,8 @@ PerfectVideo/
 │   ├── asset-checklist.md         # 素材准备清单（生成前交给用户）
 │   ├── micro-motion.md            # 微动节拍（D · 惊艳藏在 0.5s）
 │   ├── light-phase.md             # 光相位（E · 光线演一段戏）
+│   ├── shot-scale.md              # 景别×情绪（镜头语言地基）
+│   ├── post-shot-review.md        # 执行度对账（试片会 · 写拍改闭环）
 │   └── output-contract.md
 ├── schemas/visual-bible-lock.md
 ├── examples/golden-a-single15.md    # P0 金样（非 SKILL.md）
@@ -524,6 +527,9 @@ PerfectVideo/
 | **B 首尾帧+多参考图**（连戏硬控制 90→99%） | `references/frame-reference-contract.md` | ✅ |
 | **D 微动节拍**（发丝/衣袂/云裂/月晕） | `references/micro-motion.md` | ✅ |
 | **E 光相位**（基线→变奏→落幅 单向演进） | `references/light-phase.md` | ✅ |
+| **景别×情绪**（镜头语言地基） | `references/shot-scale.md` | ✅ |
+| **执行度对账**（试片会 · 写拍改闭环） | `references/post-shot-review.md` | ✅ |
+| **A+ MultiClip 逐拍**（执行度根治） | `references/compile-modes.md` A+ | ✅ |
 | SKILL 核心原则/静默代填/Reference Map | 四件套焊入 | ✅ |
 
 ### P2（发布后迭代）
