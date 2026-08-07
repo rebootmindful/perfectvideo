@@ -1,0 +1,10 @@
+# 记忆 / 临时 / 运行时产物
+.workbuddy/
+outputs/
+.release_stage/
+__pycache__/
+*.pyc
+
+# 系统
+.DS_Store
+Thumbs.db

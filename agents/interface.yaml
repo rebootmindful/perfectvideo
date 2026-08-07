@@ -1,0 +1,150 @@
+# PerfectVideo — neutral agent interface (yao-meta-skill compatible)
+
+name: PerfectVideo
+display_name: PerfectVideo
+version: 0.2.1
+maturity: scaffold
+lifecycle: design
+owner: PerfectVideo
+license: UNSPECIFIED
+review_cadence: per-major-research-drop
+
+description: >
+  Art-director skill for AI short film / video: overview, shotlist, world/material
+  constitution, model-clip timeline budget, cross-shot literal locks, NextShot chain,
+  master cinematography matrix, generic (and optional tool-specific) visual prompts,
+  optional artistic voiceover/subtitles. User-facing ~7-8 questions (PerfectPhoto parity);
+  never interrogate S0-S12 step-by-step. Never growth hooks or CTAs. Not API execution.
+
+intent:
+  job: >
+    Turn creative intent into a frozen Visual Bible plus a deliverable visual script
+    contract (overview, shotlist, prompts, optional VO/subs) under model clip limits.
+  primary_outputs:
+    - video_overview
+    - intent_diagnosis
+    - visual_bible_lock
+    - shotlist
+    - prompts_primary_generic
+    - qc_report
+    - delivery_footer
+  optional_outputs:
+    - prompts_by_tool
+    - prompts_lang_en
+    - compact_prompt
+    - nextshot_dual_prompts
+    - voiceover
+    - subtitles
+    - director_recommendation_card
+  exclusions:
+    - pure_static_portrait_8step
+    - url_remake_pipeline
+    - batch_video_api_orchestration
+    - cinematic_word_dump
+    - growth_hooks_and_cta_copy
+    - rewrite_user_vo_into_marketing_three_act
+
+triggers:
+  positive:
+    - 视频提示词
+    - AI视频prompt
+    - 分镜
+    - 分镜表
+    - nextshot
+    - 下一镜
+    - 连戏
+    - 材质宪法
+    - 运镜建议
+    - 艺术短片
+    - PerfectVideo
+    - storyboard video prompt
+    - 旁白字幕
+  negative:
+    - 只要静态写真八步
+    - 只要翻译摘要
+    - 只跑 API 出片
+    - 运镜词库大全
+    - 只要爆款钩子CTA
+
+inputs:
+  - user_creative_intent
+  - optional_platform_duration_aspect
+  - optional_path_visual_or_vo
+  - optional_reference_images
+  - optional_prior_lock_pack
+  - optional_user_owned_voiceover_text
+  - optional_director_preference
+  - optional_tool_targets
+
+outputs:
+  - video_overview
+  - structured_lock_pack
+  - shotlist
+  - compiled_video_prompt_generic
+  - optional_tool_adapters
+  - optional_voiceover_subtitles
+  - qc_and_diff_report
+
+boundaries:
+  must_not:
+    - silently_mutate_lock
+    - mix_single_take_and_shot_n_contracts
+    - omit_lock_with_same_as_above
+    - fake_single_prompt_for_target_longer_than_model_clip
+    - generate_hooks_or_cta
+    - claim_world_class_or_universal_one_click_model_fit
+  permissions:
+    network: optional
+    filesystem: optional
+    generation_api: none
+
+resources:
+  entry: SKILL.md
+  spec: PERFECTVIDEO-SPEC.md
+  references:
+    - references/user-facing-flow.md
+    - references/output-contract.md
+    - references/platform-and-overview.md
+    - references/model-constraints.md
+    - references/negative-packs.md
+    - references/voiceover-sync.md
+    - references/architecture-slots.md
+    - references/workflow-s0-s12.md
+    - references/consistency-protocol.md
+    - references/compile-modes.md
+    - references/material-constitution.md
+    - references/master-cinematography.md
+    - references/camera-moves.md
+    - references/native-audio.md
+    - references/frame-reference-contract.md
+    - references/asset-checklist.md
+    - references/micro-motion.md
+    - references/light-phase.md
+    - references/boundaries-and-qc.md
+  schemas:
+    - schemas/visual-bible-lock.md
+  examples:
+    - examples/golden-a-single15.md
+  evals:
+    - evals/trigger_cases.json
+
+compatibility:
+  hosts:
+    - workbuddy
+    - claude-code
+    - cursor
+    - codex
+    - openclaw
+  models_agnostic: true
+  prompt_guarantee: generic_primary_contract
+  video_targets_examples:
+    - seedance
+    - kling
+    - runway
+    - 可灵
+    - 即梦
+
+evidence:
+  research_docs: research/
+  runtime_validation: missing_evidence
+  world_class_claim: false
