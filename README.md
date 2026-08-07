@@ -4,6 +4,7 @@
 > PerfectVideo 是 AI 短片的艺术导演 + 摄影指导 + 连戏书记：从一句模糊感觉，产出**可连戏的视觉脚本契约**——概述、分镜表、材质/世界宪法、双时长预算、跨镜锁定、NextShot 链、25 条签名运镜、惊艳四件套（真声轨 / 首尾帧参考图 / 微动节拍 / 光相位）。
 
 - **版本：** 0.2.1-scaffold（可发布）
+- [![skills.sh](https://skills.sh/b/rebootmindful/perfectvideo)](https://skills.sh/b/rebootmindful/perfectvideo)
 - **规格：** [`PERFECTVIDEO-SPEC.md`](PERFECTVIDEO-SPEC.md)
 - **入口：** [`SKILL.md`](SKILL.md)（yao-meta-skill 形态）
 - **金样：** [`examples/golden-a-single15.md`](examples/golden-a-single15.md) · [`golden-b-yueyanque-single15.md`](examples/golden-b-yueyanque-single15.md)
@@ -53,11 +54,11 @@
 ## 快速开始
 
 ```bash
-# 方式一：复制到全局 skill 区（推荐）
-cp -r PerfectVideo ~/.workbuddy/skills/PerfectVideo
+# 方式一：npx 一键安装（需 skills CLI）
+npx skills add rebootmindful/perfectvideo
 
-# 方式二：Claude Code / Codex 等 skill 兼容 runtime
-# 将目录放进对应 skills/ 目录，重启会话
+# 方式二：复制到全局 skill 区
+cp -r PerfectVideo ~/.workbuddy/skills/PerfectVideo
 ```
 
 然后直接说：
