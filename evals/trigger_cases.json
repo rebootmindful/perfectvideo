@@ -1,0 +1,112 @@
+{
+  "skill": "PerfectVideo",
+  "version": "0.2.1",
+  "notes": "Scaffold trigger surface cases. Includes overview/shotlist/vo positives and CTA negative.",
+  "cases": [
+    {
+      "id": "pos-001",
+      "utterance": "帮我写一个15秒AI视频提示词，两个人在雨夜车站对峙",
+      "expect": "route",
+      "tags": ["positive", "timeline"]
+    },
+    {
+      "id": "pos-002",
+      "utterance": "下一个镜头推到特写，保持人物衣服帽子一致",
+      "expect": "route",
+      "tags": ["positive", "nextshot", "continuity"]
+    },
+    {
+      "id": "pos-003",
+      "utterance": "用材质宪法做一套东方流体雕塑感的短片分镜 prompt",
+      "expect": "route",
+      "tags": ["positive", "material", "storyboard"]
+    },
+    {
+      "id": "pos-004",
+      "utterance": "PerfectVideo，按斯皮尔伯格运镜给我镜头建议",
+      "expect": "route",
+      "tags": ["positive", "director"]
+    },
+    {
+      "id": "pos-005",
+      "utterance": "seedance 多镜连戏，帽子和道具不能漂",
+      "expect": "route",
+      "tags": ["positive", "continuity"]
+    },
+    {
+      "id": "pos-006",
+      "utterance": "输出完整分镜表和视频概述，画幅9:16，抖音45秒成片用15秒切片链",
+      "expect": "route",
+      "tags": ["positive", "overview", "shotlist", "dual-duration"]
+    },
+    {
+      "id": "pos-007",
+      "utterance": "艺术纪录片向旁白加字幕，不要广告口吻，配画面提示词",
+      "expect": "route",
+      "tags": ["positive", "voiceover", "subtitles"]
+    },
+    {
+      "id": "neg-001",
+      "utterance": "帮我走 PerfectPhoto 八步写一张写真静帧",
+      "expect": "no_route",
+      "tags": ["negative", "perfectphoto"]
+    },
+    {
+      "id": "neg-002",
+      "utterance": "把这篇英文论文翻译成中文摘要",
+      "expect": "no_route",
+      "tags": ["negative", "translation"]
+    },
+    {
+      "id": "neg-003",
+      "utterance": "直接调 API 批量生成并合成 MP4 上传抖音",
+      "expect": "no_route",
+      "tags": ["negative", "execution-pipeline"]
+    },
+    {
+      "id": "neg-004",
+      "utterance": "给我一份一万条电影运镜形容词大全",
+      "expect": "no_route",
+      "tags": ["negative", "word-dump"]
+    },
+    {
+      "id": "neg-005",
+      "utterance": "写爆款开头钩子和结尾关注点赞CTA的带货脚本",
+      "expect": "no_route",
+      "tags": ["negative", "cta-hook"],
+      "note": "Art director red line; do not treat as primary PerfectVideo job"
+    },
+    {
+      "id": "bound-001",
+      "utterance": "我有一张首帧图，想做下一镜视频，但还要改成红衣服",
+      "expect": "route",
+      "tags": ["boundary", "invariant-intercept"],
+      "note": "Route then intercept clothing change via bible protocol"
+    },
+    {
+      "id": "ux-001",
+      "utterance": "帮我写个片子，然后逐步问，第一问世界观，第二问材质，第三问元素……",
+      "expect": "route",
+      "tags": ["ux", "question-count"],
+      "note": "Route, then enforce U-step contract: max ~7-8 questions, never stepwise S interrogation"
+    },
+    {
+      "id": "pos-008",
+      "utterance": "用真声轨写画面内声，配微动节拍和光相位推进",
+      "expect": "route",
+      "tags": ["positive", "native-audio", "micro-motion", "light-phase"]
+    },
+    {
+      "id": "pos-009",
+      "utterance": "上一镜尾帧接下一镜，加首尾帧和人物参考图锁身份",
+      "expect": "route",
+      "tags": ["positive", "frame-reference", "continuity"]
+    },
+    {
+      "id": "pos-010",
+      "utterance": "需要更惊艳的运镜，来点子弹时间或者螺旋升巡",
+      "expect": "route",
+      "tags": ["positive", "camera-moves", "signature"]
+    }
+  ]
+}

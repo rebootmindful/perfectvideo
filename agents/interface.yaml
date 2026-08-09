@@ -1,0 +1,192 @@
+# PerfectVideo — neutral agent interface (yao-meta-skill compatible)
+
+name: PerfectVideo
+display_name: PerfectVideo
+version: 0.2.5
+maturity: scaffold
+lifecycle: design
+owner: PerfectVideo
+license: UNSPECIFIED
+review_cadence: per-major-research-drop
+
+description: >
+  Art-director skill for AI short film / video: overview, shotlist, world/material
+  constitution, model-clip timeline budget, cross-shot literal locks, NextShot chain,
+  master cinematography matrix, generic (and optional tool-specific) visual prompts,
+  optional artistic voiceover/subtitles. User-facing ~7-8 questions (PerfectPhoto parity);
+  never interrogate S0-S12 step-by-step. Never growth hooks or CTAs. Not API execution.
+
+intent:
+  job: >
+    Turn creative intent into a frozen Visual Bible plus a deliverable visual script
+    contract (overview, shotlist, prompts, optional VO/subs) under model clip limits.
+  primary_outputs:
+    - video_overview
+    - intent_diagnosis
+    - visual_bible_lock
+    - shotlist
+    - prompts_primary_generic_full
+    - prompts_primary_lang_en_full
+    - prompts_compact_emergency
+    - qc_report
+    - diff_alignment_report
+    - logic_audit_report
+    - delivery_footer
+  optional_outputs:
+    - prompts_by_tool
+    - nextshot_dual_prompts
+    - voiceover
+    - subtitles
+    - director_recommendation_card
+    - direction_options_card
+  exclusions:
+    - pure_static_portrait_8step
+    - url_remake_pipeline
+    - batch_video_api_orchestration
+    - cinematic_word_dump
+    - growth_hooks_and_cta_copy
+    - rewrite_user_vo_into_marketing_three_act
+
+triggers:
+  positive:
+    - 视频提示词
+    - AI视频prompt
+    - 分镜
+    - 分镜表
+    - nextshot
+    - 下一镜
+    - 连戏
+    - 材质宪法
+    - 运镜建议
+    - 艺术短片
+    - PerfectVideo
+    - storyboard video prompt
+    - 旁白字幕
+  negative:
+    - 只要静态写真八步
+    - 只要翻译摘要
+    - 只跑 API 出片
+    - 运镜词库大全
+    - 只要爆款钩子CTA
+
+inputs:
+  - user_creative_intent
+  - optional_platform_duration_aspect
+  - optional_path_visual_or_vo
+  - optional_reference_images
+  - optional_prior_lock_pack
+  - optional_user_owned_voiceover_text
+  - optional_director_preference
+  - optional_tool_targets
+
+outputs:
+  - video_overview
+  - structured_lock_pack
+  - shotlist
+  - compiled_video_prompt_generic
+  - optional_tool_adapters
+  - optional_voiceover_subtitles
+  - qc_and_diff_report
+
+boundaries:
+  must_not:
+    - silently_mutate_lock
+    - mix_single_take_and_shot_n_contracts
+    - omit_lock_with_same_as_above
+    - fake_single_prompt_for_target_longer_than_model_clip
+    - generate_hooks_or_cta
+    - claim_world_class_or_universal_one_click_model_fit
+    - generate_prompts_before_direction_confirmed
+    - call_generation_api_before_strategy_confirmed
+    - evaporate_director_decisions_in_prompt
+    - rewrite_primary_prompt_as_abstract_summary
+    - submit_prompt_before_logic_audit_passes
+  permissions:
+    network: optional
+    filesystem: optional
+    generation_api: none
+
+pre_production_gate:
+  description: >
+    Director's Pre-Production Gate — 写任何提示词 / 调生成 API 前的强制规划与确认。
+    叙事方法论随技能加载（references/narrative-spine.md，蒸馏自 movie-development-skill）。
+  flow:
+    - load_narrative_methodology: references/narrative-spine.md
+    - intake: U0 意图编译（情绪/视觉/气质/道具苗头）
+    - character_four_questions: 主角四问卡（想/怕/压/错信）写满，答不出回 U0 追问
+    - propose_directions: 基于意图 + 四问 + 方法论生成 2-3 方向选项（故事主轴 / 开场↔终场对照 / 生成策略+成本 / 时长格式）
+    - await_direction_confirm: 用户选 1 或「换一个」→ 才继续
+    - spec_questions: U1-U6 规格细化（已锁定方向，问题更聚焦）
+    - lock_confirm: U✅ 锁定卡 → 编译交付（overview/lock/shotlist/prompts）
+    - logic_audit: 编译后对 prompts.primary 做七维审核（六维+一次看懂）+ 观众搞笑排查；FAIL 禁提交，修复后重审
+    - generation_strategy_confirm: 明示模型+连贯性+预计成本 → 用户确认
+    - generate: 仅此时落 lock 提示词并调生成 API
+  nextshot_reuse: >
+    NextShot 与 FirstShot 同规则链（2026-08-09 对齐）：先做上镜尾帧预检+实际vs文本偏差比对，
+    再出 3 个推进方向（NG 门禁，narrative-spine §8 三追问：A 顺势/B 换维/C 反预期），
+    用户选后才锁场景 Delta；材质宪法/人物锁/光相位/声锚字符级继承；每镜独立跑 诊断Pass →
+    完整性 → 出稿前逻辑审核（含一次看懂）→ 跨镜光相位桥 → 生成策略确认 → 执行度对账 →
+    diff 闸门，一项不减。
+  hard_rules:
+    - 方向未确认前禁止落提示词
+    - 生成策略未确认前禁止调生成 API
+    - 逻辑审核未全 PASS 前禁止提交提示词/调生成 API
+    - NextShot 不得跳过 FirstShot 规则链（仅场景变换为合法 Delta）
+    - 主角四问（想/怕/压/错信）未写满前禁止出方向选项
+    - 上镜尾帧未预检（清晰度/主体在框/实际vs文本偏差）前禁止进 NextShot
+    - 方向选项须体现真实叙事差异（不同弧光/类型），非同一故事换皮
+
+resources:
+  entry: SKILL.md
+  spec: PERFECTVIDEO-SPEC.md
+  references:
+    - references/user-facing-flow.md
+    - references/output-contract.md
+    - references/platform-and-overview.md
+    - references/model-constraints.md
+    - references/narrative-spine.md
+    - references/negative-packs.md
+    - references/voiceover-sync.md
+    - references/architecture-slots.md
+    - references/workflow-s0-s12.md
+    - references/consistency-protocol.md
+    - references/compile-modes.md
+    - references/material-constitution.md
+    - references/master-cinematography.md
+    - references/camera-moves.md
+    - references/native-audio.md
+    - references/frame-reference-contract.md
+    - references/asset-checklist.md
+    - references/micro-motion.md
+    - references/light-phase.md
+    - references/shot-scale.md
+    - references/post-shot-review.md
+    - references/pre-submit-logic-audit.md
+    - references/boundaries-and-qc.md
+  schemas:
+    - schemas/visual-bible-lock.md
+  examples:
+    - examples/golden-a-single15.md
+  evals:
+    - evals/trigger_cases.json
+
+compatibility:
+  hosts:
+    - workbuddy
+    - claude-code
+    - cursor
+    - codex
+    - openclaw
+  models_agnostic: true
+  prompt_guarantee: generic_primary_contract
+  video_targets_examples:
+    - seedance
+    - kling
+    - runway
+    - 可灵
+    - 即梦
+
+evidence:
+  research_docs: research/
+  runtime_validation: missing_evidence
+  world_class_claim: false

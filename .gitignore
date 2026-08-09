@@ -1,0 +1,32 @@
+# PerfectVideo skill 仓库 .gitignore
+
+# 生成产物 / 演示视频 / 提示词草稿（不入库）
+outputs/
+*.mp4
+
+# 项目本地运行时数据（agent 记忆等，可再生）
+.workbuddy/
+media-bridge-state/
+
+# 密钥与本地配置 —— 绝不入库
+.env
+.env.*
+*.pem
+*.key
+*.p12
+*.pfx
+*.p8
+*.der
+credentials*
+*secret*
+*.token
+secrets.*
+
+# 系统 / 编辑器 / 依赖
+.DS_Store
+Thumbs.db
+node_modules/
+__pycache__/
+*.pyc
+*.log
+*.tmp
