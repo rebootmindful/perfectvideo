@@ -51,6 +51,14 @@ PerfectVideo 换了思路：**先锁世界，再动镜头。** 它把人物/衣�
 
 **光相位实测（逐秒可查）**：Shot1 冷开场(0.82) → 巨物降临最冷(0.73) → 光柱绽放最暖(1.57) → 黎明落幅；Shot2 外部暖 → 内部冷(陌生) → 指触爆发最亮(1.38/亮度115)。**剧本的光相位被模型逐秒复刻**——这是七维审核闸门拦下"合同矛盾"后的直接结果。
 
+**视觉证据（真机帧 · 仓库内可见）：**
+
+| 连戏前后对比 | 最终成片帧 |
+|---|---|
+| ![连戏前后对比：v1（漂）vs v3（锁死材质/人物）](examples/showcase/compare_v1_vs_v3.jpg) | ![最终成片帧 · 江南唤醒共生（H3 2K）](examples/showcase/demo_v3.webp) |
+
+> 左图：未锁 vs 已锁的跨镜一致性差异；右图：江南「唤醒共生」成片实帧。更多接缝特写见 `examples/showcase/demo_seam.webp`。
+
 **更多真机产物**（共 18 个 MP4 / 165MB）：cyberwuxia 赛博武侠 v3/v4、雨夜雀 29s、竹栏打斗 15s，均在 `outputs/`。
 
 ## 快速开始
@@ -126,15 +134,19 @@ PerfectVideo/
 ├── schemas/visual-bible-lock.md # Lock 字段契约
 ├── examples/                   # 金样 2 个 + showcase 资产
 ├── evals/trigger_cases.json    # 触发测试 17 用例
-└── research/                   # 11 份研究（00-11，含导演审计与鲁班打磨）
+└── research/                   # 12 份研究（00-12，含导演审计与鲁班打磨）
 ```
+
+> 注：本 skill 为**纯方法论 / 导演契约型**，无 `scripts/` 运行目录；README 中的 `npx skills add` / `cp -r` 为**安装命令**，非运行时脚本。
 
 ## 验证与测试
 
 - 触发面：`evals/trigger_cases.json`（17 用例，覆盖连戏/运镜/四件套/红线/审核）
 - 活体证据：18 个真机 MP4（`outputs/`）· 江南两镜 29s（2026-08-09）
 - 审核报告：`research/10-director-audience-review.md`（大导演×大观众双视角，93/100）
-- 打磨报告：`research/11-luban-polish-report.md`（鲁班工坊）
+- 打磨报告：`research/11-luban-polish-report.md`（鲁班工坊）· `research/12-luban-audit-2026-08-09.md`（第二轮审计 · 93 分）
+
+> **仓库不含大文件**：`outputs/`（18 个真机 MP4 / 165MB）已被 `.gitignore` 排除，克隆后需本地生成或向作者索取 sample；仓库内可见的 showcase 预览图在 `examples/showcase/`（`demo_v1/v3.webp` · `demo_seam.webp` · `compare_v1_vs_v3.jpg`）。
 
 ## 致谢
 
