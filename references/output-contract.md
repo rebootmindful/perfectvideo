@@ -26,7 +26,7 @@ style:
 audience: 
 path: visual|vo
 no_cta: true
-compile_plan: single|multishot|nextshot_chain
+compile_plan: single|single_pass|multishot|nextshot_chain
 ```
 
 ## 2. 意图诊断（必须，可短）
@@ -71,6 +71,15 @@ compile_plan: single|multishot|nextshot_chain
 **首尾帧/参考图方案**在 by_tool 声明（`--first-frame` / `@人物 @环境`）。
 
 **诚实声明：** generic 可人工粘贴多数视频模；非通用最优保证。
+
+### prompts.single_pass（A0 单次全量编译 · 用户要求"一次过生成"时必出）
+
+> 编译模式：A0 · SinglePass（见 `compile-modes.md` §A0）
+> 规则：从 shotlist 逐字提取 → 按时间线编织成连贯叙事 → 7 维信息无损（时间码/机位链/声锚/微动/光相位/材质宪法/开场终场对照）
+> 语言：与 md 文件一致，不擅自切换
+> 落盘：`outputs/*_single_pass.txt`，提交时读文件，不在命令行现场写
+
+结构：材质宪法压缩 + @槽位绑定 → 时间线叙事（每拍 1-2 句，嵌入 rack focus/光相位/声锚/VFX 微细节）→ 尾部全局参数（速度弧线/光相位/开场终场对照）
 
 ### prompts.by_tool[]（可选）
 

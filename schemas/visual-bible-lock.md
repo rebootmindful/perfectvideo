@@ -1,6 +1,6 @@
 # Schema · Visual Bible / Lock Pack / Script delivers
 
-v0.2.1 — JSON 目标形态；本文为 agent 契约。
+v0.3.0 — JSON 目标形态；本文为 agent 契约。
 
 ## Root
 
@@ -17,8 +17,8 @@ video_overview:
   audience: string
   path: visual|vo
   no_cta: true
-  compile_plan: single|multishot|nextshot_chain
-mode_default: single15|multishot|nextshot
+  compile_plan: single|single_pass|multishot|nextshot_chain
+mode_default: single15|single_pass|multi_clip|multishot|nextshot
 budget_primary: identity|motion|scene_density
 material:
   id: string?

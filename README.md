@@ -8,7 +8,7 @@
 
 [![Agent Skills](https://img.shields.io/badge/Agent%20Skills-PerfectVideo-blueviolet)](SKILL.md)
 [![skills.sh](https://skills.sh/b/rebootmindful/perfectvideo)](https://skills.sh/b/rebootmindful/perfectvideo)
-[![版本](https://img.shields.io/badge/版本-0.2.9-scaffold-orange)](VERSION)
+[![版本](https://img.shields.io/badge/版本-0.3.0-scaffold-orange)](VERSION)
 
 **一句话意图 → 可连戏的视觉脚本契约 → 真机成片：跨镜不漂、合同自洽、真机可验。**
 
@@ -23,7 +23,7 @@
 > 「江南水乡，古老上空出现深空机械巨物」→ 一句话 → **两镜 29 秒连戏成片**：
 > 第一镜「唤醒共生」（H3 2K）→ 第二镜「入内相认」（seedance 首帧链承接尾帧），
 > 人物/材质/光相位跨镜一致，拼接帧差异无跳变尖峰。
-> 全部真实产物：`outputs/jiangnan_2shots_combined.mp4`（29.4s / 20.9MB）
+> 全部真实产物：`outputs/jiangnan_2shots_combined.mp4`（29.4s / 20.9MB）· **[精简 sample 直链](examples/showcase/demo_jiangnan_2shots.mp4)**（29s / 5.8MB · 仓库内可见）
 
 ---
 
@@ -97,7 +97,7 @@ Agent 会走 **约 7–8 个小问题**（同构 PerfectPhoto 体感）→ **主
 | 导演流程 | video_overview + 意图诊断 + 锁定卡 |
 | 跨镜连戏 | Visual Bible / Lock（人物/衣帽/道具/环境/材质字符级焊接） |
 | 分镜 | shotlist[] 到秒（运镜/声画/风险） |
-| 提示词 | prompts.primary 自包含主契约（verbatim 打印件，禁蒸发）+ by_tool 适配 |
+| 提示词 | prompts.primary 自包含主契约（verbatim 打印件，禁蒸发）+ single_pass（A0 一次过编译）+ by_tool 适配 |
 | 惊艳四件套 | 真声轨 + 微动节拍 + 光相位 + 首尾帧（按模型能力启用） |
 | **审核闸门** | **出稿前七维审核报告**（合同一致性/空间拓扑/情绪因果/物理尺度/声画对齐/密度/一次看懂） |
 | NextShot | 3 推进方向 + 尾帧预检 + 跨镜光相位桥 + 执行度对账 |
@@ -128,16 +128,17 @@ Agent 会走 **约 7–8 个小问题**（同构 PerfectPhoto 体感）→ **主
 PerfectVideo/
 ├── SKILL.md                    # 入口（唯一被发现的 SKILL.md）
 ├── PERFECTVIDEO-SPEC.md        # 总规格
-├── VERSION                     # 0.2.9-scaffold
+├── VERSION                     # 0.3.0-scaffold
 ├── agents/interface.yaml       # 中立元数据（含 pre_production_gate）
-├── references/                 # 28 个细则（运镜/连戏/材质/四件套/叙事主轴/逻辑审核…）
+├── references/                 # 29 个细则（运镜/连戏/材质/四件套/叙事主轴/逻辑审核…）
+├── scripts/                    # A0 编译器（compile-single-pass.js）
 ├── schemas/visual-bible-lock.md # Lock 字段契约
 ├── examples/                   # 金样 2 个 + showcase 资产
 ├── evals/trigger_cases.json    # 触发测试 17 用例
 └── research/                   # 12 份研究（00-12，含导演审计与鲁班打磨）
 ```
 
-> 注：本 skill 为**纯方法论 / 导演契约型**，无 `scripts/` 运行目录；README 中的 `npx skills add` / `cp -r` 为**安装命令**，非运行时脚本。
+> 注：本 skill 为**方法论 / 导演契约型**，含 `scripts/compile-single-pass.js` A0 编译器（自动从 prompts.primary 编译 single_pass prompt）；README 中的 `npx skills add` / `cp -r` 为**安装命令**，非运行时脚本。
 
 ## 验证与测试
 
@@ -146,7 +147,7 @@ PerfectVideo/
 - 审核报告：`research/10-director-audience-review.md`（大导演×大观众双视角，93/100）
 - 打磨报告：`research/11-luban-polish-report.md`（鲁班工坊）· `research/12-luban-audit-2026-08-09.md`（第二轮审计 · 93 分）
 
-> **仓库不含大文件**：`outputs/`（18 个真机 MP4 / 165MB）已被 `.gitignore` 排除，克隆后需本地生成或向作者索取 sample；仓库内可见的 showcase 预览图在 `examples/showcase/`（`demo_v1/v3.webp` · `demo_seam.webp` · `compare_v1_vs_v3.jpg`）。
+> **仓库可见产物**：`examples/showcase/` 直链精简 sample 成片 [`demo_jiangnan_2shots.mp4`](examples/showcase/demo_jiangnan_2shots.mp4)（29s / 5.8MB）+ 预览图（`demo_v1/v3.webp` · `demo_seam.webp` · `compare_v1_vs_v3.jpg`）。完整 18 个真机 MP4（165MB）在 `outputs/`，被 `.gitignore` 排除，克隆后需本地生成或向作者索取。
 
 ## 致谢
 

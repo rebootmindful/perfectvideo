@@ -441,3 +441,31 @@ frame gates the view, {subject} centered as camera clears
 
 用户只说「要惊艳一点」→ 导演按题材+情感自动挑一个 C 档签名（奇观→C1、紧张→C2、产品→C8、凝固→C9），
 锁定卡上展示一句「签名运镜：螺旋升巡 180°」让用户确认，不额外追问。
+
+---
+
+## 10. 真实感视角库（非电影感 · 抖音流量赛道 · 2026-08-15 新增）
+
+> 用途：抖音/快手流量赛道的"伪纪录片/监控/偷拍"视角，与 §1-§3 电影感运镜平行。
+> 调用条件：用户明示"要抖音爆款感 / 偷拍感 / 监控感 / found footage"，或题材选"荒诞/猎奇/伪纪实"赛道。
+> 铁律不变：单主运镜；真实感视角 = 基础运镜 + 真实感增强，不叠签名运镜。
+
+| 视角 | 物理短语（可直贴） | 适用场景 | 增强手法 |
+|---|---|---|---|
+| 手机偷拍 | `phone camera, vertical grip, slight hand tremor` | 街拍/偶遇/荒诞 | 竖画幅 9:16 + 偶发失焦 |
+| 行车记录仪 | `dashcam footage, wide-angle distortion, timestamp overlay` | 路遇奇观/UFO/巨物 | 4:3 画幅 + 右下角时间戳 |
+| CCTV 监控 | `CCTV security camera, top-angle, fixed, low-res, timestamp` | 监控灵异/无人场景 | 黑白/低帧率/扫描线噪点 |
+| 无人机航拍 | `drone aerial shot, high altitude, slow descent` | 巨物/地形奇观 | 俯视比例反差 |
+| 采访/直播 | `handheld interview cam, zoom breathing, autofocus hunting` | 伪采访/突发直播 | 偶发变焦拉风箱 |
+| found footage | `shaky cam, VHS grain, date stamp, degraded tape` | 恐怖/悬疑/伪纪录片 | 信号干扰 + 画幅抖动 |
+
+**真实感增强词清单**（加在 prompt 末尾，制造"非专业拍摄"质感）：
+`amateur footage, vertical phone video, slight motion blur, imperfect framing, natural lighting, no color grading, timestamp: 2026-08-15 23:47, low-light noise`
+
+**赛道速配**（抖音爆款逻辑 · 参考 wengzige 库）：
+- 伪纪录片感 → CCTV 监控 / 行车记录仪
+- 视觉反差 → 手机偷拍 + 巨物/超现实主体
+- 土味赛博 → 无人机航拍 + 乡土场景 + 科技物
+- 荒诞搞笑 → 采访/直播 + 反差台词
+
+> ⚠️ 注意：真实感视角与 PerfectVideo 红线（禁 CTA/钩子/标题党）不冲突——视角是运镜选择，红线管的是内容欺诈。用真实感视角拍艺术短片完全合规；用它做"假装监控拍到大事件"的流量欺诈仍触红线。

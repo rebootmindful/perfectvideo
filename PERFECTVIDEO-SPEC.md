@@ -2,7 +2,7 @@
 
 | 字段 | 值 |
 |------|-----|
-| **版本** | 0.2.9-scaffold（可发布） |
+| **版本** | 0.3.0-scaffold（可发布） |
 | **日期** | 2026-08-09 |
 | **状态** | 规格完备 · P0/P1/P1.5 文档级落实 · 四件套全链路接入 · 运行时待实测 |
 | **成熟度** | `scaffold` → 目标 `production` |
@@ -51,7 +51,7 @@
 1. **video_overview**（标题 / 平台 / 画幅 / 双时长 / 风格 / 受众）  
 2. 可执行的 **Visual Bible（锁定域）**  
 3. **shotlist[]**（时间码到秒 + 画面 + 运镜 + 声画备注 + 可选 VO/字幕格）  
-4. **compiled prompts**（generic 主契约必交；可选 by_tool / 中英）  
+4. **compiled prompts**（generic 主契约必交；A0 单次全量版按需；可选 by_tool / 中英）
 5. 可选 **NextShot 双产物** + Memory Pack  
 6. 可选 **导演运镜建议卡**  
 7. **QC 报告**  
@@ -65,6 +65,7 @@
 | Visual Bible / Lock Pack | §5 + schema | ✅ 进时间轴前冻结 |
 | `shotlist[]` | §1.2.2 | ✅（A 模式 ≥1 行相位表） |
 | `prompts.primary` | generic 中文主契约（**自包含：锁定域全文展开，禁占位符**） | ✅ |
+| `prompts.single_pass` | A0 单次全量编译（7 维信息无损，落盘 `*_single_pass.txt`） | 用户要求"一次过生成"时 ✅ 否则可选 |
 | `prompts.by_tool[]` | 目标工具适配文本 | 按用户工具声明；未声明则跳过并注明 |
 | `prompts.lang_en` | 英文画面提示词 | 用户要出海/MJ/英文模时 ✅ 否则可选 |
 | Compact 版 prompt | 预算裁剪（仍含硬锁） | 可选 |
@@ -264,11 +265,12 @@ S12 NextShot               ← 成片后
 - 快速模式可跳 U1–U6 点选，仍须锁定确认 + 全套交付  
 - **禁止**推销钩子/CTA；**禁止** S 步问卷化  
 
-### 4.2 三模式合同
+### 4.2 模式合同
 
 | 模式 | 条件 | 产物合同 |
 |------|------|----------|
 | **A Single15** | target≤model 且一事一空间 | 相位时间轴 + 一镜到底；shotlist 为相位行 |
+| **A0 SinglePass** | target≤model，用户要求"一次过生成" | shotlist 全量编译成连贯叙事 + 7 维信息无损 + 落盘 `*_single_pass.txt`（`compile-modes.md` §A0） |
 | **A+ MultiClip 逐拍** | 运镜≥3 段/含签名（执行度优先） | 每拍独立 prompt + 尾帧接续 + xfade 拼接（`compile-modes.md`） |
 | **B MultiShot-in-one** | 同次 2–3 真切 | 共用 lock + `Shot N:`；shotlist 每 Shot 一行 |
 | **C NextShot Chain** | target>model 或硬连戏 | 每镜焊接 + 双产物 + **执行度对账**；shotlist 跨 clip 连续时间码（成片尺）可另注 clip 尺 |
@@ -404,7 +406,8 @@ new_prompt = copy(lock 全文) + legal_delta(shot.*) + this_clip_action
 - [ ] `shotlist` 存在；时间码可加总  
 - [ ] path.visual 时 VO/字幕显式 N/A；path.vo 时非空  
 - [ ] **无 CTA/钩子公式句**（关键词扫描：关注、点赞、看到最后、链接在等）  
-- [ ] `prompts.primary` 非空  
+- [ ] `prompts.primary` 非空
+- [ ] 用户要求"一次过生成"时 `prompts.single_pass` 非空且 7 维信息无损
 - [ ] footer 复核提示已附  
 
 **出稿前逻辑审核（P0.5 新增 · 2026-08-09）：**
@@ -471,7 +474,16 @@ PerfectVideo/
 │   ├── light-phase.md             # 光相位（E · 光线演一段戏）
 │   ├── shot-scale.md              # 景别×情绪（镜头语言地基）
 │   ├── post-shot-review.md        # 执行度对账（试片会 · 写拍改闭环）
+│   ├── narrative-spine.md         # 叙事主轴方法论
+│   ├── pre-submit-logic-audit.md  # 提交前逻辑审核
+│   ├── cinematic-mechanism-library.md  # 电影机制库
+│   ├── world-bible-depth.md       # 世界观深度档
+│   ├── kinetic-fpv-depth.md       # 动能 FPV 深度档
+│   ├── genre-visual-promise.md    # 类型视觉承诺
+│   ├── post-delivery-impact-audit.md  # PIA 出稿后冲击力审计
+│   ├── diagnose-repair.md         # 诊断修复
 │   └── output-contract.md
+├── scripts/compile-single-pass.js  # A0 SinglePass 编译器
 ├── schemas/visual-bible-lock.md
 ├── examples/golden-a-single15.md    # P0 金样（非 SKILL.md）
 ├── evals/trigger_cases.json
@@ -508,7 +520,7 @@ PerfectVideo/
 2. ~~Lock/Bible 契约~~ ✅  
 3. ~~字面量焊接规则~~ ✅  
 4. ~~材质预设框架~~ ✅  
-5. ~~三模式编译~~ ✅  
+5. ~~五模式编译（A/A0/A+/B/C）~~ ✅
 6. ~~overview + shotlist + 双时长 + 三轨音频~~ ✅ 本版  
 7. ~~generic 主契约措辞诚实化~~ ✅  
 8. ~~golden A 示例~~ ✅ `examples/golden-a-single15.md`  
@@ -539,6 +551,7 @@ PerfectVideo/
 | **景别×情绪**（镜头语言地基） | `references/shot-scale.md` | ✅ |
 | **执行度对账**（试片会 · 写拍改闭环） | `references/post-shot-review.md` | ✅ |
 | **A+ MultiClip 逐拍**（执行度根治） | `references/compile-modes.md` A+ | ✅ |
+| **A0 SinglePass**（一次过编译路径） | `references/compile-modes.md` A0 + `scripts/compile-single-pass.js` | ✅ |
 | SKILL 核心原则/静默代填/Reference Map | 四件套焊入 | ✅ |
 
 ### P2（发布后迭代）

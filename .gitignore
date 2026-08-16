@@ -3,6 +3,8 @@
 # 生成产物 / 演示视频 / 提示词草稿（不入库）
 outputs/
 *.mp4
+# 例外：showcase 精简 sample 成片入库供访客直链
+!examples/showcase/*.mp4
 
 # 项目本地运行时数据（agent 记忆等，可再生）
 .workbuddy/

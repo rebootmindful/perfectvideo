@@ -5,7 +5,7 @@
 | 保证 | 不保证 |
 |------|--------|
 | `prompts.primary` generic 中文结构完整、含硬锁 | 一键 100% 贴合任意厂商隐式最优 |
-| 合同合法（A/B/C 不混） | 未声明 target 的 by_tool 已写好 |
+| 合同合法（A/A0/A+/B/C 不混） | 未声明 target 的 by_tool 已写好 |
 | shotlist + overview 与 prompt 时长/画幅一致 | 已渲染成片 |
 
 未实现的适配器：`status: pending` + 仍给 generic。
@@ -18,10 +18,80 @@
 - shotlist：相位行  
 - **禁止** `Shot 1:` 真切标签  
 
+## A0 · SinglePass（单次全量编译 · 2026-08-16 教训新增）
+
+> **教训记录（2026-08-16 坠崖/特工场景）**：md 文件按 A+ 逐拍设计（10 拍独立 prompt），用户要求"一次过生成"时，agent 没有合规编译路径，**现场重写成英文叙事**提交——丢失 rack focus 路径、色温数值、@槽位、材质宪法 forbidden 列表、VFX 微细节、开场终场对照。违反"禁止现场重写"铁律。**根因：禁令没有对应的替代路径。修复：新增 A0 编译模式 + prompts.single_pass 产物段。**
+
+### 条件
+
+- `target_edit_duration_s <= model_clip_budget_s`，且用户要求"一次过生成"（不拆 clip）
+- 模型支持单次生成 target 时长（如 Seedance 2.5 支持 10s 单次）
+
+### 合同
+
+`single continuous generation, no splits, no cuts`
+
+### 编译规则（shotlist → single_pass prompt）
+
+```text
+输入：shotlist N 拍 + prompts.primary + 材质宪法 + 光相位 + 声锚
+输出：一段完整的 single_pass prompt（落盘到 outputs/*_single_pass.txt）
+
+编译步骤：
+1. 头部声明（3-5 句）
+   - 材质宪法压缩（核心约束 + forbidden 列表，逐字保留 forbidden）
+   - @槽位绑定（角色/环境/道具锁定，含负面声明）
+   - 全片风格关键词（电影写实、胶片颗粒等）
+
+2. 时间线叙事（按 0:00 → 0:N 顺序编织）
+   - 每拍编成 1-2 句：核心动作 + 运镜 + 速度 + 景别
+   - rack focus 迁移路径 → 嵌入对应拍的动作描述（"焦点从X收束到Y"）
+   - 光相位变化 → 嵌入叙事（色温数值保留）
+   - 声锚 → 用 <> 嵌入对应动作（Hz 数值保留）
+   - VFX 微细节 → 作为动作的延伸描述
+   - 时间标记 [0:00-0:01] 分段，但叙事不断裂（不换行成独立段）
+
+3. 尾部全局参数
+   - 速度弧线一句话总结
+   - 光相位一句话总结
+   - 开场↔终场对照一句
+```
+
+### 铁律
+
+1. **7 维信息无损**：时间码 / 机位链 / 声锚 / 微动节拍 / 光相位 / 材质宪法 / 开场终场对照——全部保留
+2. **语言一致**：与 md 文件语言一致，不擅自切换（中文 md → 中文 prompt）
+3. **禁止现场重写**：从 shotlist 逐字提取编译，不凭理解重写
+4. **落盘后再提交**：编译产物写入 `outputs/*_single_pass.txt`，提交时读文件，不在命令行现场写
+5. **优先用编译器脚本**（2026-08-16 新增）：`node scripts/compile-single-pass.js <md文件路径>` 自动从 prompts.primary 提取编译，消除手动编译的信息丢失风险。脚本失败（非标准格式）时回退手动编译，但必须在 diff 审计中标注"手动编译"
+
+### 与 A / A0 / A+ 的关系
+
+| 模式 | 适用场景 | 产物形态 | 拼接 |
+|------|---------|---------|------|
+| A · Single15 | H3 单条 15s | 一段连续叙事 | 无 |
+| **A0 · SinglePass** | **Seedance/通用 单次全量** | **一段连贯叙事（信息无损编译）** | **无** |
+| A+ · MultiClip | 逐拍精修 | N 个独立 prompt | FLF 首帧链 xfade |
+
+A/A0/A+ 三模式同源于 shotlist，编译时逐字搬运。md 文件可同时提供 `prompts.primary`（分拍）和 `prompts.single_pass`（单次），按用户选择的模式提交对应产物。
+
+### 提交 diff 审计（A0 专用）
+
+```text
+□ 7 维信息无损：时间码/机位链/声锚/微动/光相位/材质宪法/开场终场对照全部可定位
+□ 语言一致：single_pass 语言 == md 文件语言
+□ 拍数覆盖：single_pass 覆盖 shotlist 全部 N 拍的核心动作
+□ 锁定域一致：@槽位声明与 lock 字符级一致
+□ forbidden 完整：材质宪法禁止清单逐字保留
+□ 落盘提交：读 outputs/*_single_pass.txt 文件提交，非命令行现场写
+任一 ✗ → 拦截，重编译
+```
+
 ## A+ · MultiClip 逐拍（高执行度主路径 · 2026-08-07 同行评审新增）
 
 > **模型执行度打折是物理现实**：真机验证「5 段运镜只执行 3 段」（research/09）。  
 > 根治方案 = **一镜一拍**：15s 拆 5×3s 分拍，每拍单独生成（运镜 100% 执行），再 xfade 拼接。
+> **Seedance 是 A+ 最佳宿主之一**（2026-08-15）：Seedance 甜区 5-10s + 强 FLF 首帧链 = 天然逐拍短切片。A+ 规则链中的 H3 15s 假设需泛化——Seedance 走 10s 切片时拍数对齐 10 拍（见 §6.1 拍数对齐铁则），单拍时长按实际 model_clip 调整。
 
 - **条件**：target ≤ model 且**运镜 ≥3 段**或含签名运镜 → 优先逐拍；纯单主运镜仍可 A
 - **结构**：
@@ -62,7 +132,7 @@
 
 ```text
 提交前审计（每一条真实提交都必须过）：
-□ 模式一致：提交声明的模式（A/A+/B/C）== 规划模式
+□ 模式一致：提交声明的模式（A/A0/A+/B/C）== 规划模式
 □ 拍数一致：逐拍时提交条数 == shotlist 拍数（5 拍 = 5 条，不合并）
 □ 节拍一致：提交内容覆盖全部 beats（1 秒一动作 = 15 个微节拍都在）
 □ 运镜一致：运镜段数/顺序 == 规划（缓推→环绕→甩摇→子弹时间不得缺段）
@@ -73,8 +143,9 @@
 
 **实施要点：**
 - A+ 逐拍：**逐拍生成 = 逐条提交**——每拍 1 条独立 prompt（锁同 lock 前缀），禁止把多拍合并成一条长 prompt
+- A0 单次：编译产物落盘 `outputs/*_single_pass.txt`，提交时读文件——**不在命令行现场写 prompt**
 - 生成前把规划产物落成 `outputs/*_prompt.txt` 文件，提交时 `--prompt-file` 直接读文件——**不在命令行现场写 prompt**
-- 提交后留痕：task_id + 提交文件路径写进执行记录（可回溯 diff）
+- 提交后留痕（2026-08-16 强化）：本地任务状态文件 `tasks/{task_id}.json` 的 `prompt` 字段**必须记录完整 prompt 文本**或指向 `outputs/*_prompt.txt` / `outputs/*_single_pass.txt` 文件路径——**禁止只写摘要**（如"Agent rooftop ritual - original PIA prompt"）。摘要无法回溯 diff，等于无留痕。
 
 ### A+ 独立规则链（2026-08-09 新增 · 与 A/C 同规则，消除模式断层）
 
@@ -143,6 +214,10 @@ A+ 每段（拍）规则链：
 | 材质宪法 | 全片统一材质语法 + 禁止清单 | "wet-black ink-wash tiles, oxidized steel, organic flowing gold; no plastic metal, no anime faces" |
 | 开场↔终场对照 | 首秒 vs 末秒的视觉差异 | "opening: she looks down at water; ending: she stands looking levelly forward" |
 
+**拍数对齐铁则（2026-08-15 新增）：** 拍数 = `model_clip_budget_s` 实际秒数，不是固定 15。Seedance 默认 10s → 10 拍；H3 15s → 15 拍。禁止给 10s 切片写满 15 拍（短时长塞超量节拍 → 节奏崩溃）。
+
+**Seedance + 参考视频例外（2026-08-15 新增）：** by_tool.seedance 走参考视频（`@视频1 用于动作/运镜`）时，Seedance 官方原则"只需说明继承哪些，不必逐动作复述"——此时拍数减负：只写 delta（本镜与参考视频的差异 + 关键瞬间），不全塞 N 拍。参考视频已准确给动作时，逐拍复述反而和素材冲突。
+
 ### 6.2 双档输出
 
 | 产物 | 用途 | 规则 |
@@ -201,7 +276,8 @@ A+ 每段（拍）规则链：
 | target | 要点 |
 |--------|------|
 | generic | 完整中文主契约 |
-| seedance / kling / 可灵 / 即梦 | 动作具体、运镜单主、时长秒、参考图角色分开写 |
+| seedance | **默认 10s**（甜区 5-10s，15s 上限边缘易漂）；运镜强度节制（剧烈运动敏感）；**FLF 首尾帧链优先于单条长生成**；@人物/@环境 参考图角色分离 |
+| kling / 可灵 / 即梦 | 动作具体、运镜单主、时长秒、参考图角色分开写 |
 | midjourney_still | 单帧可绘；`--ar`；少视频动词堆砌 |
 | cogvideox | 主体+动作+场景+镜头运动+风格+画质 |
 | sd_still | 正向主描述 + 负向包分离 |
@@ -216,6 +292,33 @@ A+ 每段（拍）规则链：
 | Veo / Runway | 视版本 | 视版本 | ✅ | 按官方能力降级 |
 
 铁律：`native-audio.md` · `frame-reference-contract.md` · `micro-motion.md` · `light-phase.md` 四段按模型能力启用，能力缺失即降级，不伪造能力。
+
+## Seedance 原生语法适配（2026-08-15 新增 · by_tool.seedance 专属）
+
+> Seedance 2.0+ 有原生符号与语法，自然语言描述会被忽略。by_tool.seedance 编译时必须转成原生语法。
+
+### 符号映射（声音 → Seedance 符号）
+
+| 内容 | Seedance 符号 | PerfectVideo 来源 | 编译写法 |
+|---|---|---|---|
+| 音乐 | `()` | native-audio 非声场轨 | `(背景播放舒缓节奏的钢琴乐)` |
+| 音效 | `<>` | diegetic audio anchors | `<远处传来钟声>` |
+| 台词 | `{}` | VO 对白（path.vo） | `{你好，欢迎回来}` |
+| 字幕 | `【】` | subtitles | `【第一章：启程】` |
+
+**台词语言控制**（Seedance 原生公式）：`台词语言 + 地区变体/口音 + 表达方式 + 说话人 + {台词内容}`
+- 例：`台词语言：美式英语。女孩用自然口语化的美式英语说：{I thought you weren't coming.}`
+- 声音控制：`无背景音乐，只保留人物对白、环境声和动作音效。不要字幕。`
+
+### 时长/画幅移出 prompt
+
+Seedance 官方明确：**分辨率、时长不写进提示词，在生成页面/接口设置**。by_tool.seedance 编译时：
+- `15 seconds, 16:9` 等参数 → 移到接口参数段（`--duration` / `--aspect`），不进 prompt 文本
+- prompt 只留主体/动作/场景/运镜/声音/风格
+
+### 参考视频继承
+
+用参考视频时，Seedance 官方原则"只需说明继承哪些，不必逐动作复述"——与完整性铁律的冲突见 §6.1 拍数对齐铁则的例外条。
 
 ## 中英
 

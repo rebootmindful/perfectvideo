@@ -15,7 +15,7 @@ description: >
   爆款钩子/完播CTA/带货话术主路径、翻译摘要无关任务。
 metadata:
   author: PerfectVideo
-  version: 0.2.9-scaffold
+  version: 0.3.0-scaffold
   maturity: scaffold
   skill_type: production-scaffold
 platforms:
@@ -44,7 +44,8 @@ platforms:
 5. **禁止**对用户逐步审问 S0–S12；用户可见交互 **只能是 U0–U6 + 冻结**（约 7～8 问）  
 6. **禁止「模式守门」被绕过**（2026-08-07 竹栏教训）：节拍密度 ≥2 动作/3s 或运镜 ≥3 段时 **只允许 A+ 逐拍**，禁止降级为 A 单条；**禁止**为省事把 A+ 规划私自改成单条生成  
 7. **禁止静默降级用户诉求**：当模型能力冲突（如 H3 首尾帧与多参考图互斥）导致无法原样满足用户时，**必须先向用户亮出方案让 ta 选**，禁止擅自改方案或丢诉求（如把「参考图」降级成「文字化」）  
-8. **禁止「提交 ≠ 规划」**（2026-08-07 竹栏教训 2）：**真正提交给模型的 prompt 必须从规划产物（shotlist/prompts.primary/逐拍各拍）逐字搬运**，禁止 agent 凭理解现场重写、重组、压缩；提交前必须 diff 对齐——拍数/节拍/运镜段数/锁定域与规划一致，不一致即拦截
+8. **禁止「提交 ≠ 规划」**（2026-08-07 竹栏教训 2）：**真正提交给模型的 prompt 必须从规划产物（shotlist/prompts.primary/逐拍各拍）逐字搬运**，禁止 agent 凭理解现场重写、重组、压缩；提交前必须 diff 对齐——拍数/节拍/运镜段数/锁定域与规划一致，不一致即拦截；用户要求"一次过生成"时走 A0 SinglePass 编译（见 compile-modes.md §A0），禁止从 A+ 逐拍现场合并
+9. **禁止跳过出稿后冲击力审计**（2026-08-16 新增）：交付产物后**必须**执行 PIA（Post-Delivery Impact Audit）——搜索全网同类镜头拍法、对比当前产物、输出冲击力提升建议。**禁止**跳过直接进 NextShot；**禁止**不搜索就给建议；**禁止**用户未确认就修改产物
 
 ## 核心原则
 
@@ -58,6 +59,7 @@ platforms:
 8. **叙事主轴方法论随技能加载**（`references/narrative-spine.md`，蒸馏自 `movie-development-skill`）：故事线四问 / 15 拍骨架 / 开场↔终场对照 / 场景公式 / 类型视觉承诺。**方向未确认前禁止落提示词、禁止调生成 API**（见 UG 门禁）。
 9. **提交提示词是导演合同的 verbatim 打印件**（2026-08-09 新增）：`prompts.primary` 必须逐字承载导演文档全部精髓——15 拍时间码、机位链、声锚、微动节拍、光相位、材质宪法。禁止以"模型读不完"为由蒸发；禁止信达雅式摘要。可另出 `prompts.compact_emergency` 降级，但 primary 仍必须完整。
 10. **出稿前逻辑审核是强制闸门**（2026-08-09 新增 · `references/pre-submit-logic-audit.md`）：编译完成后、提交模型/调生成 API **之前**，必须以导演+观众双视角过七维审核（六维合同自洽：合同一致性 / 空间拓扑 / 情绪因果 / 物理尺度 / 声画对齐 / 密度控制 + 观众试映第 7 维「一次看懂」）+ 搞笑风险排查。**任一 FAIL 禁止提交、禁止调生成 API**，修复后重审全 PASS 才放行。**禁止**以"模型能自己理解"为由跳过。
+11. **出稿后冲击力审计是强制门禁**（2026-08-16 新增 · `references/post-delivery-impact-audit.md`）：交付产物后、NextShot 之前，**必须**执行 PIA：① WebSearch 搜索全网同类镜头拍法（≥2 维度）② 对比当前产物识别差距 ③ 输出三维度提升建议（戏剧化/冲击力/感染力）④ AskUserQuestion 询问用户是否采纳 ⑤ 用户确认后才修改。**不可跳过**，**禁止**不搜索就给建议。
 
 ## 深度思维（Director's Imagination Protocol · 顶级电影细节）
 
@@ -80,6 +82,7 @@ platforms:
 | 模式 | 何时 | 合同 |
 |------|------|------|
 | **A Single15** | target≤model，一事一空间 | 相位轴 + 一镜到底 |
+| **A0 SinglePass** | target≤model，用户要求"一次过生成" | shotlist 全量编译成连贯叙事 + 7 维信息无损 + 落盘 txt |
 | **A+ MultiClip 逐拍** | 运镜≥3 段/含签名运镜（执行度优先） | 每拍独立 prompt + 尾帧接续 + xfade 拼接 |
 | **B MultiShot-in-one** | 同次 2–3 真切 | 共用 lock + `Shot N:` |
 | **C NextShot Chain** | target>model 或硬连戏 | 焊接 + 双产物 + **每镜执行度对账** |
@@ -126,7 +129,7 @@ platforms:
   1. **故事主轴**（一句话：缺陷→催化→解决）
   2. **开场↔终场视觉对照**（show change, don't tell）
   3. **生成策略**（模型 + 连贯性 + 预计成本，见 `model-constraints.md` §8）
-  4. **时长 / 格式**（Single15 / MultiShot / NextShot）
+  4. **时长 / 格式**（Single15 / SinglePass / MultiShot / NextShot）
 - 用户选 1 个，或「换一个 / 我有个想法」→ 重出。**确认后才进 U1–U6**。
 - 选项须体现真实差异（如：A 孤胆觉醒弧 / B 双人羁绊弧 / C 世界异变弧），不是同一故事的换皮。
 - 类型视觉承诺：若用户意图跨类型，点明每类型必给的 set-piece，避免"承诺不足"。
@@ -186,8 +189,8 @@ platforms:
 
 ### 静默代填（禁止单独成问）
 
-预算主花销 · A/A+/B/C · **景别 scale**（每拍必填）· morph · **真声轨（H3/Kling3）** · **微动节拍** · **光相位** · 首尾帧/参考图方案 · tech 降权 · negatives · title 草案 · QC/CTA 扫描 · **深度档（机制库+双架构 Bible+类型承诺+镜头机制检查表+主体驱动力：world-heavy/action-immersive/cinematic-grade 或用户显式要详细时自动升档）** · **诊断 Pass（锁档后六大病症+7维评分卡，任一<1或总分<10必修）** · **出稿前逻辑审核（编译后必跑七维+观众搞笑排查，FAIL 禁提交）**  
-细节：`references/native-audio.md` · `micro-motion.md` · `light-phase.md` · `frame-reference-contract.md` · `shot-scale.md` · `pre-submit-logic-audit.md`
+预算主花销 · A/A0/A+/B/C · **景别 scale**（每拍必填）· morph · **真声轨（H3/Kling3）** · **微动节拍** · **光相位** · 首尾帧/参考图方案 · tech 降权 · negatives · title 草案 · QC/CTA 扫描 · **深度档（机制库+双架构 Bible+类型承诺+镜头机制检查表+主体驱动力：world-heavy/action-immersive/cinematic-grade 或用户显式要详细时自动升档）** · **诊断 Pass（锁档后六大病症+7维评分卡，任一<1或总分<10必修）** · **出稿前逻辑审核（编译后必跑七维+观众搞笑排查，FAIL 禁提交）** · **出稿后冲击力审计（交付后必跑 PIA：WebSearch 同类镜头→三维度提升建议→用户确认后改，不可跳过）**
+细节：`references/native-audio.md` · `micro-motion.md` · `light-phase.md` · `frame-reference-contract.md` · `shot-scale.md` · `pre-submit-logic-audit.md` · `post-delivery-impact-audit.md`
 
 ### 快速模式
 
@@ -195,17 +198,41 @@ platforms:
 
 ### 交付（冻结后必出）
 
-1. `video_overview`  
-2. 冻结 Lock/Bible  
-3. `shotlist[]`  
-4. `prompts.primary`（generic）  
-5. 按需 by_tool / lang_en  
-6. VO/字幕或 N/A  
-7. QC + footer  
+1. `video_overview`
+2. 冻结 Lock/Bible
+3. `shotlist[]`
+4. `prompts.primary`（generic 分拍版）
+4b. `prompts.single_pass`（A0 单次全量版，用户要求"一次过生成"时必出）
+5. 按需 by_tool / lang_en
+6. VO/字幕或 N/A
+7. QC + footer
+
+### U✅+ · 出稿后冲击力审计（PIA · 硬门禁 · 不可跳过 · 2026-08-16 新增）
+
+> **铁律**：交付产物后**必须**执行，不可跳过。不执行 PIA 禁止进入 NextShot。  
+> 方法论：[`references/post-delivery-impact-audit.md`](references/post-delivery-impact-audit.md)
+
+**流程**：
+
+1. **搜索**（WebSearch ≥2 维度）：基于当前产物的核心场景关键词，搜索全网同类镜头/场景的拍法（电影/MV/广告/AI视频prompt）。每维度 fetch 1-2 个最权威来源。
+2. **分析**：从搜索结果提取可迁移技法，对比当前产物的差距，识别"缺了什么"。
+3. **建议**：输出结构化提升建议表（三维度）：
+   - **戏剧化**：叙事张力/情感层次/角色弧光提升点
+   - **冲击力**：运镜/速度/构图/微观细节提升点
+   - **感染力**：光影/声画/节奏/情绪共鸣提升点
+   - 每条建议附来源 URL
+4. **确认**：用 AskUserQuestion 询问用户——全采纳/部分采纳/不采纳。**禁止**未经确认直接修改。
+5. **执行**：用户确认的建议落进 lock/prompts/shotlist，更新 `bible_version`，diff 标注变更点。用户拒绝的建议存档不执行。
+
+**禁止**：
+- 跳过 PIA 直接进 NextShot
+- 不搜索就给建议（凭空生成 = 红线违反）
+- 用户未确认就修改产物
+- 搜索结果与当前产物无关（关键词必须精准匹配当前场景）
 
 ### NextShot（成片后 · 与 FirstShot 同规则，仅场景变换）
 
-> **铁律（2026-08-09 对齐）**：NextShot **不是简化流程**——除「场景/舞台变换」为唯一合法 Delta 外，**其余规则与 FirstShot 完全一致**：材质宪法、人物/衣帽/道具锁定、光相位、声锚、微动节拍、出稿前逻辑审核、完整性铁律、生成策略确认、执行度对账，一项都不减。
+> **铁律（2026-08-09 对齐）**：NextShot **不是简化流程**——除「场景/舞台变换」为唯一合法 Delta 外，**其余规则与 FirstShot 完全一致**：材质宪法、人物/衣帽/道具锁定、光相位、声锚、微动节拍、出稿前逻辑审核、完整性铁律、生成策略确认、执行度对账、**出稿后冲击力审计（PIA）**，一项都不减。
 
 不重走 U0–U6（方向已定）。用户说下一镜 → **先做尾帧预检** → **出 3 个推进方向（NextShot 方向门禁）** → 用户选 1 → 锁场景 Delta → 走全规则链：
 
@@ -245,6 +272,8 @@ S12 = NextShot loop（每镜与 FirstShot 同规则链，仅场景变换为合�
 | 高密度节拍（≥2 动作/3s）却要单条 | 🚫 模式守门 → 强制 A+ 逐拍 |
 | 用户要「首帧+多参考图」模型却互斥 | 🚫 亮方案给用户选，禁文字化降级 |
 | 要把 S 步当问卷 | 🚫 收回 U 步 |
+| 跳过 PIA / 不搜索就给建议 | 🚫 红线违反，必须先 WebSearch 再建议 |
+| 用户未确认就改产物 | 🚫 红线违反，必须 AskUserQuestion 后才改 |
 
 ## Bundled Resources
 
@@ -269,6 +298,7 @@ S12 = NextShot loop（每镜与 FirstShot 同规则链，仅场景变换为合�
 | **景别×情绪（地基）** | `references/shot-scale.md` |
 | **执行度对账（试片会）** | `references/post-shot-review.md` |
 | **出稿前逻辑审核（强制闸门）** | `references/pre-submit-logic-audit.md` |
+| **出稿后冲击力审计（PIA · 硬门禁）** | `references/post-delivery-impact-audit.md` |
 | 后台 S 映射 | `references/workflow-s0-s12.md` |
 | 槽位 | `references/architecture-slots.md` |
 | 连戏 | `references/consistency-protocol.md` |

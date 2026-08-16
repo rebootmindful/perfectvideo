@@ -2,7 +2,7 @@
 
 name: PerfectVideo
 display_name: PerfectVideo
-version: 0.2.5
+version: 0.3.0
 maturity: scaffold
 lifecycle: design
 owner: PerfectVideo
@@ -27,6 +27,7 @@ intent:
     - shotlist
     - prompts_primary_generic_full
     - prompts_primary_lang_en_full
+    - prompts_single_pass_full
     - prompts_compact_emergency
     - qc_report
     - diff_alignment_report
@@ -84,6 +85,7 @@ outputs:
   - structured_lock_pack
   - shotlist
   - compiled_video_prompt_generic
+  - compiled_single_pass_prompt
   - optional_tool_adapters
   - optional_voiceover_subtitles
   - qc_and_diff_report
@@ -163,6 +165,12 @@ resources:
     - references/post-shot-review.md
     - references/pre-submit-logic-audit.md
     - references/boundaries-and-qc.md
+    - references/cinematic-mechanism-library.md
+    - references/diagnose-repair.md
+    - references/genre-visual-promise.md
+    - references/kinetic-fpv-depth.md
+    - references/post-delivery-impact-audit.md
+    - references/world-bible-depth.md
   schemas:
     - schemas/visual-bible-lock.md
   examples:

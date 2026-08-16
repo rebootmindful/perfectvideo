@@ -68,9 +68,9 @@
 
 - [ ] `video_overview` 齐全（title/platform/aspect/双时长/style/audience/path/no_cta）  
 - [ ] model vs target 逻辑：target>model ⇒ chain，无超长单提示词幻觉  
-- [ ] **模式守门**（`compile-modes.md`）：beats ≥2 动作/3s 或运镜 ≥3 段 → 强制 A+，未降级为 A 单条  
+- [ ] **模式守门**（`compile-modes.md`）：beats ≥2 动作/3s 或运镜 ≥3 段 → 强制 A+；用户要求"一次过生成"时走 A0 编译（不从 A+ 降级为 A 单条）  
 - [ ] **用户参考图诉求未被降级**：首帧+多参考图 → 已映射逐拍多首帧；模型互斥时已亮方案让用户选（未文字化丢图）  
-- [ ] **提交 diff 对齐**（`compile-modes.md`）：提交 prompt 与规划逐字一致——拍数/节拍/运镜段数/锁定域/参考图数量全对齐，无现场重写  
+- [ ] **提交 diff 对齐**（`compile-modes.md`）：提交 prompt 与规划逐字一致——拍数/节拍/运镜段数/锁定域/参考图数量全对齐，无现场重写；"一次过生成"走 A0 编译产物（single_pass.txt），禁止现场合并  
 - [ ] **提交留痕**：task_id + 提交 prompt 文件路径已记录（可回溯 diff）  
 - [ ] aspect 与 lock/prompt 一致  
 - [ ] shotlist 非空；时间码可理解、可加总  

@@ -1,6 +1,6 @@
 {
   "skill": "PerfectVideo",
-  "version": "0.2.9",
+  "version": "0.3.0",
   "notes": "Scaffold trigger surface cases. Includes overview/shotlist/vo positives and CTA negative.",
   "cases": [
     {

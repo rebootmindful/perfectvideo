@@ -16,7 +16,7 @@
 ### 维度 A · 合同一致性（自相矛盾 = 最大事故源）
 - [ ] 模式声明与正文一致：宣称 `single continuous take / no cuts` 的，15-BEAT 里**不得出现** `camera cuts / cut to / close-up 切换 / 景别跳变`；
 - [ ] 一镜到底时，机位段数、景别变化必须在**单个连续镜头物理可行**范围（超广角无法 4 秒内做 3 次景别跳变）；
-- [ ] 若需要切换 → **改模式**（A+ MultiClip 逐拍 / B MultiShot / C 链），不许"既一镜又切"。
+- [ ] 若需要切换 → **改模式**（A0 SinglePass 单次全量 / A+ MultiClip 逐拍 / B MultiShot / C 链），不许"既一镜又切"。
 - **典型 FAIL**：`CAMERA CHAIN: no cuts` + `0:05-0:06 Camera cuts to close-up`。
 
 ### 维度 B · 空间拓扑（机位链可走通性）
