@@ -38,6 +38,22 @@ function extractPrimary(md) {
   return m[1].trim();
 }
 
+function extractLockDim(md, name) {
+  const re = new RegExp(`###\\s*${name}[^\\n]*\\n([\\s\\S]*?)(?=\\n###|\\n##|$)`);
+  const m = md.match(re);
+  return m ? m[1].trim() : null;
+}
+
+function extractLockDimensions(md) {
+  return {
+    envDepth: extractLockDim(md, '环境纵深'),
+    lifeDetail: extractLockDim(md, '生活化细节'),
+    colorTone: extractLockDim(md, '色彩色调'),
+    quality: extractLockDim(md, '画质质感'),
+    mood: extractLockDim(md, '整体氛围'),
+  };
+}
+
 function classifySections(sections) {
   const find = (kws) => sections.find(s => kws.every(k => s.title.includes(k)));
   return {
@@ -86,7 +102,7 @@ function buildTimeline(shots) {
   }).join('\n');
 }
 
-function auditDimensions(c) {
+function auditDimensions(c, lockDims) {
   const dims = {
     timecode: c.shots.length > 0,
     camera: !!c.camera,
@@ -95,17 +111,38 @@ function auditDimensions(c) {
     light: !!c.light,
     material: !!c.material,
     openEnd: !!c.openEnd,
+    envDepth: !!lockDims?.envDepth,
+    lifeDetail: !!lockDims?.lifeDetail,
+    colorTone: !!lockDims?.colorTone,
+    quality: !!lockDims?.quality,
+    mood: !!lockDims?.mood,
   };
   const missing = Object.entries(dims).filter(([, v]) => !v).map(([k]) => k);
   return { dims, missing };
 }
 
-function assembleParts(c, primary) {
+function appendLockDims(parts, lockDims) {
+  if (!lockDims) return;
+  const map = [
+    ['envDepth', '环境纵深'],
+    ['lifeDetail', '生活化细节'],
+    ['colorTone', '色彩色调'],
+    ['quality', '画质质感'],
+    ['mood', '整体氛围'],
+  ];
+  for (const [key, label] of map) {
+    if (lockDims[key]) parts.push(`【${label}】${lockDims[key].replace(/\n/g, ' ')}`);
+  }
+}
+
+function assembleParts(c, primary, lockDims) {
   const parts = [];
   const warn = (name) => console.error(`\u26a0 \u7f3a\u5931\uff1a${name}`);
 
   if (c.material) parts.push(`\u3010\u6750\u8d28\u5baa\u6cd5\u3011${c.material.body}`);
   else warn('\u6750\u8d28\u5baa\u6cd5');
+
+  appendLockDims(parts, lockDims);
 
   if (c.slots) {
     const lines = c.slots.body.split('\n').filter(l => l.trim().startsWith('@'));
@@ -134,17 +171,18 @@ function compileSinglePass(mdPath) {
   const md = fs.readFileSync(mdPath, 'utf-8');
   const primary = extractPrimary(md);
   const c = classifySections(parseSections(primary));
+  const lockDims = extractLockDimensions(md);
 
   if (c.shots.length === 0) {
     throw new Error('prompts.primary \u4e2d\u672a\u627e\u5230\u5206\u62cd\u6bb5\uff08\u30100:00-0:01 \u62cdN\u3011\u683c\u5f0f\uff09\u3002\u8be5 md \u6587\u4ef6\u53ef\u80fd\u4f7f\u7528\u4e86\u975e\u6807\u51c6\u683c\u5f0f\uff08\u5982\u82f1\u6587\u53d9\u4e8b\uff09\uff0c\u9700\u5148\u91cd\u6784\u4e3a\u6807\u51c6 A+ \u9010\u62cd\u683c\u5f0f\u624d\u80fd\u7f16\u8bd1\u3002');
   }
 
-  const { dims, missing } = auditDimensions(c);
+  const { dims, missing } = auditDimensions(c, lockDims);
   if (missing.length > 0) {
-    console.error(`\u26a0 7\u7ef4\u6821\u9a8c\uff1a\u7f3a\u5931 ${missing.join(', ')}\uff08\u5df2\u7f16\u8bd1\u4f46\u8bf7\u68c0\u67e5\u6e90\u6587\u4ef6\uff09`);
+    console.error(`\u26a0 12\u7ef4\u6821\u9a8c\uff1a\u7f3a\u5931 ${missing.join(', ')}\uff08\u5df2\u7f16\u8bd1\u4f46\u8bf7\u68c0\u67e5\u6e90\u6587\u4ef6\uff09`);
   }
 
-  const parts = assembleParts(c, primary);
+  const parts = assembleParts(c, primary, lockDims);
   return { prompt: parts.join('\n\n'), dims, missing, shotCount: c.shots.length };
 }
 
@@ -169,4 +207,4 @@ console.log(`  \u8f93\u5165: ${mdPath}`);
 console.log(`  \u8f93\u51fa: ${outputPath}`);
 console.log(`  \u62cd\u6570: ${shotCount}`);
 console.log(`  \u5b57\u7b26\u6570: ${prompt.length}`);
-console.log(`  7\u7ef4: ${passed} ${missing.length > 0 ? `| \u7f3a\u5931: ${missing.join(',')}` : '| \u5168\u90e8\u901a\u8fc7'}`);
+console.log(`  12\u7ef4: ${passed} ${missing.length > 0 ? `| \u7f3a\u5931: ${missing.join(',')}` : '| \u5168\u903b\u8fc7'}`);
